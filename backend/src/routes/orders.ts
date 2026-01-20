@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import prisma from '../config/database';
 import chainService from '../services/chainService';
-import { createOrderSchema, deliverOrderSchema } from '../utils/validation';
+import { createOrderSchema, deliverOrderSchema, purchaseOrderSchema } from '../utils/validation';
 import { encrypt, hashData, keccak256Hash } from '../utils/crypto';
 import logger from '../config/logger';
 
@@ -9,7 +9,7 @@ export default async function orderRoutes(fastify: FastifyInstance) {
   // Simple purchase endpoint - creates order and returns payment requirements
   fastify.post('/api/orders/purchase', async (request, reply) => {
     try {
-      const data = createOrderSchema.parse(request.body);
+      const data = purchaseOrderSchema.parse(request.body);
 
       const product = await prisma.product.findUnique({
         where: { id: data.productId },

@@ -15,7 +15,12 @@ export const createProductSchema = z.object({
 
 export const createOrderSchema = z.object({
   productId: z.string(),
-  paymentProofHash: z.string(),
+  paymentProofHash: z.string().optional(),
+  buyerAddress: addressSchema.optional(),
+});
+
+export const purchaseOrderSchema = z.object({
+  productId: z.string(),
   buyerAddress: addressSchema,
 });
 
