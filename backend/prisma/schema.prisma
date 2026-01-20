@@ -1,0 +1,212 @@
+// AgentShop v1 Database Schema
+// Optimized for x402 payments + Agent subcontracting
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  MERCHANT
+  BUYER
+  AGENT
+  VERIFIER
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  ESCROW_CREATED
+  DELIVERED
+  VERIFIED
+  RELEASED
+  REFUNDED
+  FAILED
+}
+
+enum DeliveryType {
+  INSTANT
+  ESCROW
+  VERIFICATION_REQUIRED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  walletAddress String    @unique
+  role          UserRole  @default(BUYER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  products      Product[]
+  orders        Order[]   @relation("BuyerOrders")
+  deliveries    Delivery[]
+  agentBudget   AgentBudget?
+
+  @@index([walletAddress])
+  @@map("users")
+}
+
+model Product {
+  id                    String       @id @default(cuid())
+  merchantId            String
+  name                  String
+  description           String       @db.Text
+  priceUSDC             String       // Store as string to handle BigInt
+  deliveryType          DeliveryType @default(ESCROW)
+  requiresVerification  Boolean      @default(false)
+  deliveryTimeoutSec    Int          @default(3600)
+  platformFeeBps        Int          @default(500)
+  metadataJson          String?      @db.Text
+  active                Boolean      @default(true)
+  onchainProductId      String?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  // Relations
+  merchant              User         @relation(fields: [merchantId], references: [id])
+  orders                Order[]
+
+  @@index([merchantId])
+  @@index([active])
+  @@map("products")
+}
+
+model Order {
+  id                    String       @id @default(cuid())
+  productId             String
+  buyerId               String
+  status                OrderStatus  @default(PENDING_PAYMENT)
+  amountUSDC            String       // Store as string to handle BigInt
+  paymentProofJson      String?      @db.Text
+  paymentProofHash      String?
+  escrowTxHash          String?
+  escrowOrderIdOnchain  String?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  timeoutAt             DateTime?
+
+  // Relations
+  product               Product      @relation(fields: [productId], references: [id])
+  buyer                 User         @relation("BuyerOrders", fields: [buyerId], references: [id])
+  delivery              Delivery?
+  verificationJob       VerificationJob?
+  agentExecution        AgentExecution?
+
+  @@index([productId])
+  @@index([buyerId])
+  @@index([status])
+  @@index([timeoutAt])
+  @@map("orders")
+}
+
+model Delivery {
+  id                      String    @id @default(cuid())
+  orderId                 String    @unique
+  merchantId              String
+  deliveredSecretEncrypted String   @db.Text
+  deliverProofHash        String
+  deliveredAt             DateTime  @default(now())
+  releaseTxHash           String?
+
+  // Relations
+  order                   Order     @relation(fields: [orderId], references: [id])
+  merchant                User      @relation(fields: [merchantId], references: [id])
+
+  @@index([orderId])
+  @@map("deliveries")
+}
+
+model VerificationJob {
+  id                        String    @id @default(cuid())
+  orderId                   String    @unique
+  verifierWallet            String
+  verifierPaymentProofHash  String?
+  verifierPaymentTxHash     String?
+  passed                    Boolean?
+  evidenceHash              String?
+  verificationTxHash        String?
+  totalEarnedUSDC           String?   // Track verifier earnings
+  createdAt                 DateTime  @default(now())
+  completedAt               DateTime?
+
+  // Relations
+  order                     Order     @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+  @@index([verifierWallet])
+  @@map("verification_jobs")
+}
+
+model AgentBudget {
+  id                  String    @id @default(cuid())
+  userId              String    @unique
+  dailyLimitUSDC      String    // Store as string to handle BigInt
+  perTxLimitUSDC      String
+  spentTodayUSDC      String    @default("0")
+  categoriesJson      String?   @db.Text
+  lastResetAt         DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Relations
+  user                User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("agent_budgets")
+}
+
+model AgentExecution {
+  id                  String    @id @default(cuid())
+  orderId             String    @unique
+  userPrompt          String    @db.Text
+  reasoningSteps      String    @db.Text // JSON array of reasoning steps
+  toolCallsJson       String    @db.Text // JSON array of tool calls
+  totalCostUSDC       String
+  executionTimeMs     Int
+  success             Boolean   @default(false)
+  errorMessage        String?   @db.Text
+  createdAt           DateTime  @default(now())
+
+  // Relations
+  order               Order     @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+  @@map("agent_executions")
+}
+
+model VerifierStats {
+  id                  String    @id @default(cuid())
+  verifierWallet      String    @unique
+  totalJobsCompleted  Int       @default(0)
+  totalJobsPassed     Int       @default(0)
+  totalJobsFailed     Int       @default(0)
+  totalEarnedUSDC     String    @default("0")
+  avgResponseTimeMs   Int       @default(0)
+  successRate         Float     @default(0)
+  lastJobAt           DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([verifierWallet])
+  @@map("verifier_stats")
+}
+
+model TransactionFeed {
+  id              String    @id @default(cuid())
+  type            String    // PURCHASE, VERIFICATION, RELEASE, REFUND
+  description     String    @db.Text
+  amountUSDC      String?
+  fromAddress     String?
+  toAddress       String?
+  txHash          String?
+  metadata        String?   @db.Text // JSON
+  createdAt       DateTime  @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+  @@map("transaction_feed")
+}
