@@ -47,15 +47,14 @@ export default async function agentRoutes(fastify: FastifyInstance) {
     try {
       const data = setBudgetSchema.parse(request.body);
 
-      // Auto-create user if doesn't exist
+      // Auto-create user if doesn't exist (data.userId is walletAddress)
       let user = await prisma.user.findUnique({
-        where: { id: data.userId },
+        where: { walletAddress: data.userId },
       });
 
       if (!user) {
         user = await prisma.user.create({
           data: {
-            id: data.userId,
             walletAddress: data.userId,
             role: 'BUYER',
           },
@@ -64,9 +63,9 @@ export default async function agentRoutes(fastify: FastifyInstance) {
       }
 
       const budget = await prisma.agentBudget.upsert({
-        where: { userId: data.userId },
+        where: { userId: user.id },
         create: {
-          userId: data.userId,
+          userId: user.id,
           dailyLimitUSDC: data.dailyLimitUSDC,
           perTxLimitUSDC: data.perTxLimitUSDC,
           spentTodayUSDC: '0',
@@ -97,8 +96,17 @@ export default async function agentRoutes(fastify: FastifyInstance) {
     try {
       const { userId } = request.params as { userId: string };
 
+      // userId is walletAddress, find user first
+      const user = await prisma.user.findUnique({
+        where: { walletAddress: userId },
+      });
+
+      if (!user) {
+        return reply.code(404).send({ error: 'User not found' });
+      }
+
       const budget = await prisma.agentBudget.findUnique({
-        where: { userId },
+        where: { userId: user.id },
       });
 
       if (!budget) {
