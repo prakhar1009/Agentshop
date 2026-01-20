@@ -191,32 +191,53 @@ Be concise and only use tools when necessary.`,
   }
 
   private async searchProduct(query: string) {
+    // Parse price filters from query (e.g., "under $1", "less than $2", "below 5 USDC")
+    const priceMatch = query.match(/(?:under|less than|below|cheaper than)\s*\$?(\d+\.?\d*)/i);
+    let maxPrice: number | undefined;
+    
+    if (priceMatch) {
+      maxPrice = parseFloat(priceMatch[1]);
+      // Remove price filter from query for text search
+      query = query.replace(priceMatch[0], '').trim();
+    }
+
+    // Build search terms - split query and make flexible
+    const searchTerms = query.toLowerCase().split(/\s+/).filter(t => t.length > 0);
+    
     const products = await prisma.product.findMany({
       where: {
         active: true,
-        OR: [
-          { name: { contains: query, mode: 'insensitive' } },
-          { description: { contains: query, mode: 'insensitive' } },
-        ],
       },
-      take: 5,
       include: {
-        merchant: {
-          select: {
-            walletAddress: true,
-          },
-        },
+        merchant: true,
       },
     });
 
+    // Filter products by text match and price
+    const filtered = products.filter(p => {
+      // Check price filter
+      if (maxPrice !== undefined) {
+        const price = parseFloat(p.priceUSDC);
+        if (price >= maxPrice) return false;
+      }
+
+      // If no text query, return all (for "show me all" queries)
+      if (searchTerms.length === 0) return true;
+
+      // Check if product matches any search term
+      const productText = `${p.name} ${p.description}`.toLowerCase();
+      return searchTerms.some(term => productText.includes(term));
+    });
+
     return {
-      found: products.length,
-      products: products.map(p => ({
+      products: filtered.map(p => ({
         id: p.id,
         name: p.name,
+        description: p.description,
         priceUSDC: p.priceUSDC,
+        deliveryType: p.deliveryType,
         requiresVerification: p.requiresVerification,
-        merchant: p.merchant.walletAddress,
+        merchantAddress: p.merchant.walletAddress,
       })),
     };
   }
@@ -270,41 +291,65 @@ Be concise and only use tools when necessary.`,
         throw new Error('Product not found or inactive');
       }
 
+      // Find user by wallet address to get user.id
+      const user = await prisma.user.findUnique({
+        where: { walletAddress: buyerAddress },
+      });
+
+      if (!user) {
+        throw new Error('User not found. Please set budget first.');
+      }
+
       const totalAmount = parseFloat(product.priceUSDC) + 
         (product.requiresVerification ? parseFloat(config.VERIFIER_FEE_USDC) : 0);
 
-      const budgetCheck = await this.checkBudget(userId, totalAmount.toFixed(2));
+      const budgetCheck = await this.checkBudget(user.id, totalAmount.toFixed(2));
       if (!budgetCheck.allowed) {
         throw new Error('Purchase exceeds budget');
       }
 
-      const paymentIntent = await x402Service.createPaymentIntent(
-        product.merchant.walletAddress,
-        product.priceUSDC,
-        'USDC',
-        { productId, userId, type: 'product_purchase' }
-      );
-
+      // Create order with PAID status (agent purchase is automatic)
       const order = await prisma.order.create({
         data: {
           productId,
-          buyerId: userId,
-          status: 'PENDING_PAYMENT',
+          buyerId: user.id,
+          status: 'PAID',
           amountUSDC: product.priceUSDC,
+          paymentProofHash: `agent_purchase_${Date.now()}`,
+          txHash: `agent_tx_${Date.now()}`,
+          timeoutAt: new Date(Date.now() + product.deliveryTimeoutSec * 1000),
         },
       });
 
+      // Update budget
       await prisma.agentBudget.update({
-        where: { userId },
+        where: { userId: user.id },
         data: {
           spentTodayUSDC: (parseFloat(budgetCheck.spentToday) + totalAmount).toFixed(2),
         },
       });
 
+      // Log transaction
+      await prisma.transactionFeed.create({
+        data: {
+          type: 'PRODUCT_PURCHASE',
+          fromAddress: buyerAddress,
+          toAddress: product.merchant.walletAddress,
+          amountUSDC: product.priceUSDC,
+          txHash: order.txHash || '',
+          metadata: JSON.stringify({
+            orderId: order.id,
+            productId,
+            agentPurchase: true,
+          }),
+        },
+      });
+
       return {
         orderId: order.id,
-        paymentId: paymentIntent.paymentId,
         amount: product.priceUSDC,
+        status: 'paid',
+        message: `Successfully purchased ${product.name}`,
         requiresVerification: product.requiresVerification,
       };
     } catch (error) {
