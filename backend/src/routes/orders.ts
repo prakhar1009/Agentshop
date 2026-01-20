@@ -55,7 +55,7 @@ export default async function orderRoutes(fastify: FastifyInstance) {
         message: 'Order created. Please complete payment with MetaMask.',
       });
     } catch (error) {
-      logger.error('Error creating purchase order:', error);
+      logger.error({ err: error }, 'Error creating purchase order');
       return reply.code(500).send({ error: 'Failed to create purchase order' });
     }
   });
@@ -107,7 +107,7 @@ export default async function orderRoutes(fastify: FastifyInstance) {
         message: 'Payment confirmed successfully!',
       });
     } catch (error) {
-      logger.error('Error confirming order payment:', error);
+      logger.error({ err: error }, 'Error confirming order payment');
       return reply.code(500).send({ error: 'Failed to confirm payment' });
     }
   });
@@ -156,7 +156,7 @@ export default async function orderRoutes(fastify: FastifyInstance) {
         nextStep: 'create_escrow',
       });
     } catch (error) {
-      logger.error('Error creating order:', error);
+      logger.error({ err: error }, 'Error creating order');
       return reply.code(500).send({ error: 'Failed to create order' });
     }
   });
@@ -218,7 +218,7 @@ export default async function orderRoutes(fastify: FastifyInstance) {
         nextStep: 'delivery',
       });
     } catch (error) {
-      logger.error('Error creating escrow:', error);
+      logger.error({ err: error }, 'Error creating escrow');
       return reply.code(500).send({ error: 'Failed to create escrow' });
     }
   });
@@ -279,7 +279,7 @@ export default async function orderRoutes(fastify: FastifyInstance) {
         nextStep: order.product.requiresVerification ? 'verification' : 'release',
       });
     } catch (error) {
-      logger.error('Error delivering order:', error);
+      logger.error({ err: error }, 'Error delivering order');
       return reply.code(500).send({ error: 'Failed to deliver order' });
     }
   });
@@ -325,7 +325,7 @@ export default async function orderRoutes(fastify: FastifyInstance) {
         timeoutAt: order.timeoutAt,
       });
     } catch (error) {
-      logger.error('Error fetching order:', error);
+      logger.error({ err: error }, 'Error fetching order');
       return reply.code(500).send({ error: 'Failed to fetch order' });
     }
   });
@@ -352,7 +352,7 @@ export default async function orderRoutes(fastify: FastifyInstance) {
         })),
       });
     } catch (error) {
-      logger.error('Error fetching orders:', error);
+      logger.error({ err: error }, 'Error fetching orders');
       return reply.code(500).send({ error: 'Failed to fetch orders' });
     }
   });

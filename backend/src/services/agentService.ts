@@ -173,7 +173,7 @@ Be concise and only use tools when necessary.`,
         result: finalResult,
       };
     } catch (error) {
-      logger.error('Agent execution error:', error);
+      logger.error({ err: error }, 'Agent execution error');
       
       reasoningSteps.push({
         step: reasoningSteps.length + 1,
@@ -275,7 +275,7 @@ Be concise and only use tools when necessary.`,
         reason: allowed ? 'Budget approved' : 'Insufficient budget',
       };
     } catch (error) {
-      logger.error('Budget check error:', error);
+      logger.error({ err: error }, 'Budget check error');
       throw error;
     }
   }
@@ -309,6 +309,7 @@ Be concise and only use tools when necessary.`,
       }
 
       // Create order with PAID status (agent purchase is automatic)
+      const txHash = `agent_tx_${Date.now()}`;
       const order = await prisma.order.create({
         data: {
           productId,
@@ -316,7 +317,6 @@ Be concise and only use tools when necessary.`,
           status: 'PAID',
           amountUSDC: product.priceUSDC,
           paymentProofHash: `agent_purchase_${Date.now()}`,
-          txHash: `agent_tx_${Date.now()}`,
           timeoutAt: new Date(Date.now() + product.deliveryTimeoutSec * 1000),
         },
       });
@@ -333,10 +333,11 @@ Be concise and only use tools when necessary.`,
       await prisma.transactionFeed.create({
         data: {
           type: 'PRODUCT_PURCHASE',
+          description: `Agent purchased ${product.name}`,
           fromAddress: buyerAddress,
           toAddress: product.merchant.walletAddress,
           amountUSDC: product.priceUSDC,
-          txHash: order.txHash || '',
+          txHash: txHash,
           metadata: JSON.stringify({
             orderId: order.id,
             productId,
@@ -353,7 +354,7 @@ Be concise and only use tools when necessary.`,
         requiresVerification: product.requiresVerification,
       };
     } catch (error) {
-      logger.error('Create purchase error:', error);
+      logger.error({ err: error }, 'Create purchase error');
       throw error;
     }
   }
@@ -373,7 +374,7 @@ Be concise and only use tools when necessary.`,
         status: 'verification_initiated',
       };
     } catch (error) {
-      logger.error('Hire verifier error:', error);
+      logger.error({ err: error }, 'Hire verifier error');
       throw error;
     }
   }
