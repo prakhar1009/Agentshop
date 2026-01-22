@@ -11,6 +11,10 @@ export default async function orderRoutes(fastify: FastifyInstance) {
     try {
       const data = purchaseOrderSchema.parse(request.body);
 
+      if (!data.buyerAddress) {
+        return reply.code(400).send({ error: 'Buyer address is required' });
+      }
+
       const product = await prisma.product.findUnique({
         where: { id: data.productId },
         include: { merchant: true },
@@ -126,6 +130,10 @@ export default async function orderRoutes(fastify: FastifyInstance) {
 
       if (!product || !product.active) {
         return reply.code(404).send({ error: 'Product not found or inactive' });
+      }
+
+      if (!data.buyerAddress) {
+        return reply.code(400).send({ error: 'Buyer address is required' });
       }
 
       let buyer = await prisma.user.findUnique({
