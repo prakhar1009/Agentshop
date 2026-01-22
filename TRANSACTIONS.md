@@ -86,7 +86,7 @@
 
 ---
 
-### Transaction #5: news api key
+### Transaction #5: weather
 **Amount:** $0.02 USDC  
 **Transaction Hash:** [0x5b882c5b357e5323428df85cd7b974e2f4e6ccd74ef85c13d4efce527c572581](https://explorer.cronos.org/testnet/tx/0x5b882c5b357e5323428df85cd7b974e2f4e6ccd74ef85c13d4efce527c572581)  
 **Timestamp:** Jan 22, 2026  
@@ -102,7 +102,7 @@
 
 ---
 
-### Transaction #6: news api key
+### Transaction #6: vjhmvh
 **Amount:** $0.02 USDC  
 **Transaction Hash:** [0x7e65b0642ba4b6a264a0df108eddc17451b9c91ca08f83a16c9cf730beba3586](https://explorer.cronos.org/testnet/tx/0x7e65b0642ba4b6a264a0df108eddc17451b9c91ca08f83a16c9cf730beba3586)  
 **Timestamp:** Jan 22, 2026  

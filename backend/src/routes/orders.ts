@@ -72,19 +72,38 @@ export default async function orderRoutes(fastify: FastifyInstance) {
 
       const order = await prisma.order.findUnique({
         where: { id },
-        include: { product: true, buyer: true },
+        include: { 
+          product: { 
+            include: { merchant: true } 
+          }, 
+          buyer: true 
+        },
       });
 
       if (!order) {
         return reply.code(404).send({ error: 'Order not found' });
       }
 
-      // Update order status to PAID
+      // Generate cryptographic receipt
+      const receiptData = {
+        orderId: id,
+        txHash: txHash,
+        amountUSDC: order.amountUSDC,
+        buyerAddress: order.buyer.walletAddress,
+        merchantAddress: order.product.merchant.walletAddress,
+        productId: order.productId,
+        productName: order.product.name,
+        timestamp: Date.now(),
+      };
+      const receiptHash = keccak256Hash(JSON.stringify(receiptData));
+
+      // Update order status to PAID with receipt
       const updatedOrder = await prisma.order.update({
         where: { id },
         data: {
           status: 'PAID',
           paymentProofHash: txHash,
+          receiptHash: receiptHash,
         },
         include: {
           product: true,
@@ -95,13 +114,19 @@ export default async function orderRoutes(fastify: FastifyInstance) {
       // Create transaction feed entry
       await prisma.transactionFeed.create({
         data: {
-          type: 'PURCHASE',
-          description: `Purchase: ${order.product.name}`,
-          amountUSDC: order.amountUSDC,
-          fromAddress: order.buyer.walletAddress,
-          toAddress: order.product.merchantId,
+          type: 'PRODUCT_PURCHASE',
+          description: `Order ${id} paid - ${updatedOrder.product.name}`,
+          fromAddress: updatedOrder.buyer.walletAddress,
+          toAddress: updatedOrder.product.merchant.walletAddress,
+          amountUSDC: updatedOrder.amountUSDC,
           txHash,
-          metadata: JSON.stringify({ orderId: order.id, productId: order.productId }),
+          metadata: JSON.stringify({ 
+            orderId: id,
+            productId: updatedOrder.productId,
+            productName: updatedOrder.product.name,
+            receiptHash: receiptHash,
+            receiptData: receiptData,
+          }),
         },
       });
 
@@ -112,6 +137,8 @@ export default async function orderRoutes(fastify: FastifyInstance) {
         orderId: id,
         status: 'paid',
         txHash,
+        receiptHash: receiptHash,
+        receiptData: receiptData,
         message: 'Payment confirmed successfully!',
       });
     } catch (error) {
@@ -361,7 +388,8 @@ export default async function orderRoutes(fastify: FastifyInstance) {
           productName: o.product.name,
           buyerAddress: o.buyer.walletAddress,
           priceUSDC: o.amountUSDC,
-          txHash: o.paymentProofHash, // This contains the real txHash after confirmation
+          txHash: o.paymentProofHash,
+          receiptHash: o.receiptHash,
           createdAt: o.createdAt,
         })),
       });
