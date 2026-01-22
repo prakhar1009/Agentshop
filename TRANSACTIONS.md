@@ -11,76 +11,78 @@
 
 ## 📊 Transaction Summary
 
-**Total Purchases:** 0 (In Progress)  
-**Total Value:** $0.00 USDC.e  
-**Success Rate:** 0%  
-**Agent Autonomy:** Budget-controlled autonomous purchases
+**Total Purchases:** 4 ✅  
+**Total Value:** $0.08 USDC (4 x $0.02)  
+**Success Rate:** 100%  
+**Agent Autonomy:** Budget-controlled autonomous purchases  
+**Buyer Address:** 0x769A2a2DfaDe17D787DCe0b033DFdc2f838f5DC2
 
 ---
 
 ## 🔗 Transactions
 
-### Transaction #1: [Product Name]
-**Amount:** $X.XX USDC.e  
-**Transaction Hash:** [0x...](https://explorer.cronos.org/testnet/tx/0x...)  
-**Timestamp:** YYYY-MM-DD HH:MM UTC  
-**Buyer:** 0x...  
-**Merchant:** 0x...  
-**Status:** ✅ Confirmed
+### Transaction #1: news api key
+**Amount:** $0.02 USDC  
+**Transaction Hash:** [0x64a5057dd5193755819a6cd9b2f38259bdf512a65be9a9eb09a6e681762f9707](https://explorer.cronos.org/testnet/tx/0x64a5057dd5193755819a6cd9b2f38259bdf512a65be9a9eb09a6e681762f9707)  
+**Timestamp:** Jan 22, 2026  
+**Buyer:** 0x769A2a2DfaDe17D787DCe0b033DFdc2f838f5DC2  
+**Merchant:** 0x769A2a2DfaDe17D787DCe0b033DFdc2f838f5DC2  
+**Status:** ✅ Confirmed  
+**Block:** 69300794
 
-**Agent Action:**
-- Searched marketplace for products under budget
-- Evaluated product requirements
-- Checked budget constraints
-- Autonomously initiated purchase
-- Signed transaction with MetaMask
-- Confirmed on-chain payment
-
----
-
-### Transaction #2: [Product Name]
-**Amount:** $X.XX USDC.e  
-**Transaction Hash:** [0x...](https://explorer.cronos.org/testnet/tx/0x...)  
-**Timestamp:** YYYY-MM-DD HH:MM UTC  
-**Buyer:** 0x...  
-**Merchant:** 0x...  
-**Status:** ✅ Confirmed
-
-**Agent Action:**
-- Budget check passed
-- Product verification requested
-- Autonomous purchase execution
-- Payment confirmed
+**Purchase Flow:**
+- User browsed marketplace
+- Selected news api key product
+- MetaMask popup appeared
+- Approved transaction with 0.001 tCRO gas
+- Transaction confirmed on-chain
+- Order marked as PAID in database
 
 ---
 
-### Transaction #3: [Product Name]
-**Amount:** $X.XX USDC.e  
-**Transaction Hash:** [0x...](https://explorer.cronos.org/testnet/tx/0x...)  
-**Timestamp:** YYYY-MM-DD HH:MM UTC  
-**Buyer:** 0x...  
-**Merchant:** 0x...  
+### Transaction #2: news api key
+**Amount:** $0.02 USDC  
+**Transaction Hash:** [0x1f646d5821940506d9420c710e0add66dd49a580cc463b4f1c30fb81bade3091](https://explorer.cronos.org/testnet/tx/0x1f646d5821940506d9420c710e0add66dd49a580cc463b4f1c30fb81bade3091)  
+**Timestamp:** Jan 22, 2026  
+**Buyer:** 0x769A2a2DfaDe17D787DCe0b033DFdc2f838f5DC2  
+**Merchant:** 0x769A2a2DfaDe17D787DCe0b033DFdc2f838f5DC2  
 **Status:** ✅ Confirmed
+
+**Purchase Flow:**
+- Repeat purchase to test transaction confirmation
+- MetaMask approved
+- Gas: 0.001 tCRO
+- Successfully confirmed
 
 ---
 
-### Transaction #4: [Product Name]
-**Amount:** $X.XX USDC.e  
-**Transaction Hash:** [0x...](https://explorer.cronos.org/testnet/tx/0x...)  
-**Timestamp:** YYYY-MM-DD HH:MM UTC  
-**Buyer:** 0x...  
-**Merchant:** 0x...  
+### Transaction #3: news api key
+**Amount:** $0.02 USDC  
+**Transaction Hash:** [0x2218aae9bce74f3059d21729e3de6f33655e84ee3fa8a69b0f9afea4a055152a](https://explorer.cronos.org/testnet/tx/0x2218aae9bce74f3059d21729e3de6f33655e84ee3fa8a69b0f9afea4a055152a)  
+**Timestamp:** Jan 21, 2026  
+**Buyer:** 0x769A2a2DfaDe17D787DCe0b033DFdc2f838f5DC2  
+**Merchant:** 0x769A2a2DfaDe17D787DCe0b033DFdc2f838f5DC2  
 **Status:** ✅ Confirmed
+
+**Purchase Flow:**
+- Early testing transaction
+- Verified MetaMask integration working
+- Confirmed transaction hash capture
 
 ---
 
-### Transaction #5: [Product Name]
-**Amount:** $X.XX USDC.e  
-**Transaction Hash:** [0x...](https://explorer.cronos.org/testnet/tx/0x...)  
-**Timestamp:** YYYY-MM-DD HH:MM UTC  
-**Buyer:** 0x...  
-**Merchant:** 0x...  
+### Transaction #4: news api key
+**Amount:** $0.02 USDC  
+**Transaction Hash:** [0x1ddf0e7699257588e3b86e39dcb2faa9c4d99f7ae7c2042b67d538445f8816b3](https://explorer.cronos.org/testnet/tx/0x1ddf0e7699257588e3b86e39dcb2faa9c4d99f7ae7c2042b67d538445f8816b3)  
+**Timestamp:** Jan 20, 2026  
+**Buyer:** 0x769A2a2DfaDe17D787DCe0b033DFdc2f838f5DC2  
+**Merchant:** 0x769A2a2DfaDe17D787DCe0b033DFdc2f838f5DC2  
 **Status:** ✅ Confirmed
+
+**Purchase Flow:**
+- First successful transaction
+- Proof of concept working
+- Full end-to-end purchase flow validated
 
 ---
 
@@ -218,7 +220,24 @@ curl http://localhost:3001/api/feed
 
 ---
 
-**Last Updated:** [YYYY-MM-DD]  
-**Total Test Value Distributed:** $X.XX USDC.e  
+**Last Updated:** Jan 22, 2026  
+**Total Test Value Distributed:** $0.08 USDC  
 **Blockchain:** Cronos Testnet  
 **Explorer:** https://explorer.cronos.org/testnet
+
+---
+
+## ✅ PHASE 2 STATUS: 80% COMPLETE
+
+**What We Have:**
+- ✅ 4 real on-chain transactions
+- ✅ All confirmed on Cronos Testnet
+- ✅ Transaction hashes documented
+- ✅ Purchase flow working
+- ✅ MetaMask integration functional
+
+**What's Next:**
+- 🔄 Fix dashboard to show purchases (in progress)
+- 🔄 Add 1-2 more diverse product purchases
+- 📸 Take screenshots for documentation
+- 🚀 Ready for Phase 3 (Payment Proofs)
