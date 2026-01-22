@@ -44,7 +44,11 @@ Respond with ONLY JSON:
         temperature: 0.2,
       });
 
-      const intent = JSON.parse(intentResponse.choices[0].message.content || '{}');
+      // Parse JSON response, handling markdown code blocks
+      let rawContent = intentResponse.choices[0].message.content || '{}';
+      // Remove markdown code blocks if present
+      rawContent = rawContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const intent = JSON.parse(rawContent);
       logger.info({ intent }, 'LangGraph intent analysis');
 
       // Step 2: Search products
