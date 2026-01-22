@@ -138,8 +138,7 @@ Respond with ONLY JSON:
             buyerId: userId,
             productId: selectedProduct.id,
             amountUSDC: selectedProduct.priceUSDC,
-            status: 'AWAITING_PAYMENT' as any,
-            deliveryMethod: selectedProduct.deliveryType,
+            status: 'PENDING_PAYMENT',
           },
           include: {
             product: {
