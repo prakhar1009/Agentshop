@@ -343,11 +343,12 @@ export default async function orderRoutes(fastify: FastifyInstance) {
 
       return reply.send({
         orders: orders.map(o => ({
-          orderId: o.id,
+          id: o.id,
+          productId: o.productId,
           status: o.status,
           productName: o.product.name,
-          buyer: o.buyer.walletAddress,
-          amountUSDC: o.amountUSDC,
+          buyerAddress: o.buyer.walletAddress,
+          priceUSDC: o.amountUSDC,
           createdAt: o.createdAt,
         })),
       });
