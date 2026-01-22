@@ -104,8 +104,11 @@ Respond with ONLY JSON (no markdown):
 
       // If user wants to BUY (not just search), continue
       if (intent.action === 'buy') {
+        logger.info('🔥 PURCHASE FLOW STARTED - action is buy');
+        
         // Step 3: Select best product (first one for now)
         const selectedProduct = products[0];
+        logger.info({ selectedProduct: selectedProduct.name }, '📦 Selected product');
 
         messages.push({
           role: 'assistant',
@@ -114,6 +117,7 @@ Respond with ONLY JSON (no markdown):
         });
 
         // Step 4: Check budget
+        logger.info({ userId }, '💰 Checking budget for user');
         const user = await prisma.user.findUnique({
           where: { id: userId },
           include: {
@@ -121,7 +125,10 @@ Respond with ONLY JSON (no markdown):
           },
         });
 
+        logger.info({ hasBudget: !!user?.agentBudget }, '💰 Budget check result');
+
         if (!user?.agentBudget) {
+          logger.warn('⚠️ No budget set for user');
           messages.push({
             role: 'assistant',
             content: `⚠️ Please set your agent budget first!`,
@@ -149,6 +156,7 @@ Respond with ONLY JSON (no markdown):
         });
 
         // Step 5: Create purchase order
+        logger.info('📝 Creating order...');
         order = await prisma.order.create({
           data: {
             buyerId: userId,
@@ -165,8 +173,11 @@ Respond with ONLY JSON (no markdown):
           },
         });
 
+        logger.info({ orderId: order.id }, '✅ Order created successfully');
+
         // Signal frontend to trigger MetaMask
         needsMetaMask = true;
+        logger.info('🔐 Setting needsMetaMask = true, will trigger MetaMask popup');
 
         messages.push({
           role: 'assistant',
@@ -180,6 +191,8 @@ Respond with ONLY JSON (no markdown):
             productName: selectedProduct.name,
           },
         });
+        
+        logger.info({ messageCount: messages.length, needsMetaMask }, '📨 Sending response with messages');
       }
 
       return reply.send({
