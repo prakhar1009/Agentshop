@@ -82,6 +82,10 @@ export default async function orderRoutes(fastify: FastifyInstance) {
           status: 'PAID',
           paymentProofHash: txHash,
         },
+        include: {
+          product: true,
+          buyer: true,
+        },
       });
 
       // Create transaction feed entry
@@ -349,6 +353,7 @@ export default async function orderRoutes(fastify: FastifyInstance) {
           productName: o.product.name,
           buyerAddress: o.buyer.walletAddress,
           priceUSDC: o.amountUSDC,
+          txHash: o.paymentProofHash, // This contains the real txHash after confirmation
           createdAt: o.createdAt,
         })),
       });

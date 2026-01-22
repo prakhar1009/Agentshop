@@ -308,49 +308,15 @@ Be concise and only use tools when necessary.`,
         throw new Error('Purchase exceeds budget');
       }
 
-      // Create order with PAID status (agent purchase is automatic)
-      const txHash = `agent_tx_${Date.now()}`;
-      const order = await prisma.order.create({
-        data: {
-          productId,
-          buyerId: user.id,
-          status: 'PAID',
-          amountUSDC: product.priceUSDC,
-          paymentProofHash: `agent_purchase_${Date.now()}`,
-          timeoutAt: new Date(Date.now() + product.deliveryTimeoutSec * 1000),
-        },
-      });
-
-      // Update budget
-      await prisma.agentBudget.update({
-        where: { userId: user.id },
-        data: {
-          spentTodayUSDC: (parseFloat(budgetCheck.spentToday) + totalAmount).toFixed(2),
-        },
-      });
-
-      // Log transaction
-      await prisma.transactionFeed.create({
-        data: {
-          type: 'PRODUCT_PURCHASE',
-          description: `Agent purchased ${product.name}`,
-          fromAddress: buyerAddress,
-          toAddress: product.merchant.walletAddress,
-          amountUSDC: product.priceUSDC,
-          txHash: txHash,
-          metadata: JSON.stringify({
-            orderId: order.id,
-            productId,
-            agentPurchase: true,
-          }),
-        },
-      });
-
+      // Return purchase intent for frontend to execute with MetaMask
       return {
-        orderId: order.id,
+        action: 'PURCHASE_INTENT',
+        productId: product.id,
+        productName: product.name,
         amount: product.priceUSDC,
-        status: 'paid',
-        message: `Successfully purchased ${product.name}`,
+        merchantAddress: product.merchant.walletAddress,
+        buyerAddress,
+        message: `Ready to purchase ${product.name} for $${product.priceUSDC}. Please confirm the transaction in MetaMask.`,
         requiresVerification: product.requiresVerification,
       };
     } catch (error) {
