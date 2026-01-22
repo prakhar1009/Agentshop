@@ -26,13 +26,25 @@ export default async function langGraphAgentRoutes(fastify: FastifyInstance) {
         timestamp: Date.now(),
       });
 
-      const intentPrompt = `Analyze this user request and determine what they want:
+      const intentPrompt = `Analyze this user request and determine their intent:
 "${prompt}"
 
-If they want to BUY something (e.g., "buy the api", "purchase weather key", "get it"), extract what product they're looking for.
-If they just want to SEARCH/BROWSE (e.g., "show me apis"), just extract the search term.
+PURCHASE INTENT - User wants to BUY if they say ANY of these:
+- "buy [product]" (e.g., "buy the api", "buy it", "buy this")
+- "purchase [product]"
+- "get [product]" (e.g., "get it", "get this")
+- "I want [product]"
+- Any command that implies purchasing/acquiring
 
-Respond with ONLY JSON:
+SEARCH INTENT - User just wants to BROWSE if they say:
+- "show me [products]"
+- "find [products]" 
+- "search for [products]"
+- "what products..."
+
+IMPORTANT: If user says "buy it", "buy this", "get it", "purchase this" → action is "buy" and searchQuery should be generic like "product" or "api"
+
+Respond with ONLY JSON (no markdown):
 {
   "action": "buy" or "search",
   "searchQuery": "what to search for"
