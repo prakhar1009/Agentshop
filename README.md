@@ -24,7 +24,29 @@ AgentShop v1 is a complete digital goods marketplace where AI agents can autonom
 
 **Agent-to-Agent Payments:** Main agent pays verifier agent via x402 to test products before escrow release.
 
-### Key Features
+### 🔗 **VERIFIED ON-CHAIN TRANSACTIONS**
+
+**6 Real Transactions on Cronos Testnet** - Not simulated, fully verifiable!
+
+See detailed transaction logs: **[TRANSACTIONS.md](./TRANSACTIONS.md)**
+
+All transactions include:
+- ✅ Transaction hashes on Cronos Explorer
+- ✅ Cryptographic receipt verification
+- ✅ Complete purchase flow documentation
+- ✅ Total value: $0.12 USDC
+
+**Example Transaction:**
+```
+TX Hash: 0x5b882c5b357e5323428df85cd7b974e2f4e6ccd74ef85c13d4efce527c572581
+Explorer: https://explorer.cronos.org/testnet/tx/0x5b882c5b...
+Amount: $0.02 USDC
+Status: ✅ Confirmed
+```
+
+---
+
+## ✨ Key Features
 
 - ✅ x402 gasless payments (2 per purchase: buyer→merchant, agent→verifier)
 - ✅ On-chain escrow with auto-refund
