@@ -26,29 +26,26 @@ export default async function langGraphAgentRoutes(fastify: FastifyInstance) {
         timestamp: Date.now(),
       });
 
-      const intentPrompt = `Analyze this user request and determine their intent:
-"${prompt}"
+      const intentPrompt = `You are analyzing a user's shopping intent. Determine if they want to BUY or just SEARCH.
 
-PURCHASE INTENT - User wants to BUY if they say ANY of these:
-- "buy [product]" (e.g., "buy the api", "buy it", "buy this")
-- "purchase [product]"
-- "get [product]" (e.g., "get it", "get this")
-- "I want [product]"
-- Any command that implies purchasing/acquiring
+User said: "${prompt}"
 
-SEARCH INTENT - User just wants to BROWSE if they say:
-- "show me [products]"
-- "find [products]" 
-- "search for [products]"
-- "what products..."
+RULES:
+1. If the user's message contains ANY of these words: "buy", "purchase", "get it", "get this", "buy it", "buy this" → action MUST be "buy"
+2. If the user says "find", "search", "show me" WITHOUT a buy word → action is "search"
 
-IMPORTANT: If user says "buy it", "buy this", "get it", "purchase this" → action is "buy" and searchQuery should be generic like "product" or "api"
+Examples:
+- "buy the api" → {"action": "buy", "searchQuery": "api"}
+- "buy it" → {"action": "buy", "searchQuery": "product"}
+- "purchase weather key" → {"action": "buy", "searchQuery": "weather key"}
+- "find api" → {"action": "search", "searchQuery": "api"}
+- "show me products" → {"action": "search", "searchQuery": "products"}
 
-Respond with ONLY JSON (no markdown):
-{
-  "action": "buy" or "search",
-  "searchQuery": "what to search for"
-}`;
+Current message: "${prompt}"
+Does it contain "buy", "purchase", "get it", "get this", or similar? If YES → action is "buy"
+
+Respond with ONLY valid JSON (no markdown, no code blocks):
+{"action": "buy", "searchQuery": "what to search for"}`;
 
       const intentResponse = await openai.chat.completions.create({
         model: config.OPENAI_MODEL,
