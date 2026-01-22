@@ -106,7 +106,9 @@ export default async function orderRoutes(fastify: FastifyInstance) {
           receiptHash: receiptHash,
         },
         include: {
-          product: true,
+          product: {
+            include: { merchant: true }
+          },
           buyer: true,
         },
       });

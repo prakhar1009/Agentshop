@@ -70,6 +70,7 @@ async function start() {
     await fastify.register(verifierRoutes);
     await fastify.register(agentRoutes);
     await fastify.register(feedRoutes);
+    await fastify.register(exportRoutes);
 
     startRefundCron();
 
@@ -97,7 +98,7 @@ async function start() {
     ╚═══════════════════════════════════════════════╝
     `);
   } catch (error) {
-    logger.error('Failed to start server:', error);
+    logger.error({ err: error }, 'Failed to start server');
     process.exit(1);
   }
 }
