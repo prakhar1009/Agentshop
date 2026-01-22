@@ -2,10 +2,13 @@
 
 ## 🌐 **LIVE DEPLOYMENT**
 
-**Production URL:** https://agentshop.vercel.app  
-**Alt URL:** https://frontend-h5grk1zjp-prakhars-projects-0f35612c.vercel.app  
+**Production URL:** https://agentshop-q3mxeebcw-prakhars-projects-0f35612c.vercel.app  
 **GitHub Repository:** https://github.com/prakhar1009/Agentshop  
 **Deployment Status:** ✅ LIVE AND VERIFIED
+
+**Local Development:**
+- Frontend: http://localhost:3000 ✅ Running
+- Backend: http://localhost:3001 ✅ Running
 
 ---
 
@@ -270,7 +273,7 @@ If given more time, we would add:
 - ✅ Real blockchain integration (6 verified transactions)
 - ✅ True AI autonomy (GPT-4 powered)
 - ✅ Cryptographic security (Phase 3 complete)
-- ✅ Live deployment (Vercel at agentshop.vercel.app)
+- ✅ Live deployment (Vercel production)
 - ✅ Professional documentation
 
 **This project demonstrates:**
@@ -289,7 +292,7 @@ If given more time, we would add:
 **Team:** Prakhar Mishra  
 **GitHub:** https://github.com/prakhar1009  
 **Project:** https://github.com/prakhar1009/Agentshop  
-**Live Demo:** https://frontend-bvfe2ntvc-prakhars-projects-0f35612c.vercel.app
+**Live Demo:** https://agentshop-q3mxeebcw-prakhars-projects-0f35612c.vercel.app
 
 ---
 
