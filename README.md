@@ -1,6 +1,17 @@
-# 🚀 AgentShop Backend - Complete Implementation Guide
+# 🚀 AgentShop - AI-Powered Autonomous Shopping
 
 **AI-Powered Commerce with x402 Gasless Payments & Agent Subcontracting**
+
+## 🌐 **LIVE DEMO**
+
+**Production URL:** https://agentshop-q3mxeebcw-prakhars-projects-0f35612c.vercel.app  
+**Status:** ✅ LIVE on Vercel
+
+**Local Development:**
+- Frontend: http://localhost:3000 ✅
+- Backend: http://localhost:3001 ✅
+
+---
 
 ## 📋 Table of Contents
 
