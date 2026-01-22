@@ -13,6 +13,7 @@ import orderRoutes from './routes/orders';
 import verifierRoutes from './routes/verifier';
 import agentRoutes from './routes/agent';
 import feedRoutes from './routes/feed';
+import exportRoutes from './routes/export';
 
 const fastify = Fastify({
   logger: logger as any,
