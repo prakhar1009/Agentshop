@@ -14,6 +14,7 @@ import verifierRoutes from './routes/verifier';
 import agentRoutes from './routes/agent';
 import feedRoutes from './routes/feed';
 import exportRoutes from './routes/export';
+import langGraphAgentRoutes from './routes/langGraphAgent';
 
 const fastify = Fastify({
   logger: logger as any,
@@ -71,6 +72,7 @@ async function start() {
     await fastify.register(agentRoutes);
     await fastify.register(feedRoutes);
     await fastify.register(exportRoutes);
+    await fastify.register(langGraphAgentRoutes);
 
     startRefundCron();
 
