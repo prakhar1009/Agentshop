@@ -156,7 +156,7 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
         logger.info('📝 Creating order...');
         order = await prisma.order.create({
           data: {
-            buyerId: userId,
+            buyerId: user.id, // Use actual user ID, not wallet address
             productId: selectedProduct.id,
             amountUSDC: selectedProduct.priceUSDC,
             status: 'PENDING_PAYMENT',
