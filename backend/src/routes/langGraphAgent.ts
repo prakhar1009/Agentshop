@@ -178,7 +178,7 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
 
         messages.push({
           role: 'assistant',
-          content: `🔐 **Ready to purchase!**\n\nPlease confirm the transaction in MetaMask:\n\n• Product: ${selectedProduct.name}\n• Amount: $${selectedProduct.priceUSDC} USDC\n• Merchant: ${order.product.merchant.walletAddress}`,
+          content: `🔐 **Ready to purchase!**\n\nPlease confirm the transaction in MetaMask:\n\n• Product: ${selectedProduct.name}\n• Amount: $${selectedProduct.priceUSDC} USDC\n• Merchant: ${order.product.merchant.walletAddress}\n• Order ID: ${order.id}\n\n💡 After confirmation, you'll receive:\n✅ Transaction hash on Cronos Explorer\n✅ Cryptographic receipt proof\n✅ Payment certificate`,
           timestamp: Date.now(),
           metadata: {
             triggerMetaMask: true,
