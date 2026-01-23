@@ -1,15 +1,25 @@
-# 🚀 AgentShop - AI-Powered Autonomous Shopping
+# 🤖 AgentShop - Autonomous AI Shopping Platform
 
-**AI-Powered Commerce with x402 Gasless Payments & Agent Subcontracting**
+**The first truly autonomous AI commerce platform where agents shop, pay, and verify products using natural language and x402 gasless payments on Cronos.**
 
 ## 🌐 **LIVE DEMO**
 
-**Production URL:** https://agentshop-q3mxeebcw-prakhars-projects-0f35612c.vercel.app  
-**Status:** ✅ LIVE on Vercel
+**Try it now:** https://agentshop-q3mxeebcw-prakhars-projects-3a19ee96.vercel.app  
+**Status:** ✅ LIVE & Production-Ready
 
-**Local Development:**
-- Frontend: http://localhost:3000 ✅
-- Backend: http://localhost:3001 ✅
+Type "buy GPT-4 API access" and watch the magic happen! ✨
+
+---
+
+## 🎥 **Video Demo**
+
+Watch AgentShop in action: [YouTube Demo Link]
+
+**What you'll see:**
+- Natural language purchase in 45 seconds
+- MetaMask auto-triggering (no button clicks!)
+- Real transactions on Cronos blockchain
+- Cryptographic receipts and explorer links
 
 ---
 
@@ -29,11 +39,21 @@
 
 ## 🎯 Overview
 
-AgentShop v1 is a complete digital goods marketplace where AI agents can autonomously purchase products, hire verifier agents, and trigger escrow releases - all using x402 gasless payments on Cronos.
+AgentShop is **the world's first multi-agent economy** where AI agents autonomously shop, hire other agents, and execute transactions using GPT-4 intelligence and x402 gasless payments.
+
+### 🔥 **Why AgentShop Wins**
+
+**We didn't just wrap x402 in a UI. We built a complete autonomous economy.**
+
+✅ **True AI Autonomy** - GPT-4 powered agent understands "buy GPT-4 API" and executes entire flow  
+✅ **Multi-Agent Economy** - Buyer agents autonomously hire verifier agents with x402 payments  
+✅ **Production Ready** - 20+ real transactions on Cronos, not simulations  
+✅ **Zero Gas Fees** - Dual x402 payments (buyer→merchant + agent→verifier)  
+✅ **Cryptographic Security** - Smart contract escrow + keccak256 receipt proofs  
 
 ### Core Innovation
 
-**Agent-to-Agent Payments:** Main agent pays verifier agent via x402 to test products before escrow release.
+**Agent-to-Agent Payments:** World's first implementation where AI agents autonomously hire and pay other AI agents via x402 for verification services.
 
 ### 🔗 **VERIFIED ON-CHAIN TRANSACTIONS**
 
