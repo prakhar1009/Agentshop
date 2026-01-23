@@ -116,13 +116,13 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
         // Step 4: Check budget
         logger.info({ userId }, '💰 Checking budget for user');
         const user = await prisma.user.findUnique({
-          where: { id: userId },
+          where: { walletAddress: userId }, // userId is actually wallet address
           include: {
             agentBudget: true,
           },
         });
 
-        logger.info({ hasBudget: !!user?.agentBudget }, '💰 Budget check result');
+        logger.info({ hasBudget: !!user?.agentBudget, userId: user?.id }, '💰 Budget check result');
 
         if (!user?.agentBudget) {
           logger.warn('⚠️ No budget set for user');
